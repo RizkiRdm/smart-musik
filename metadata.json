@@ -1,0 +1,6 @@
+{
+  "name": "Smart Muzic",
+  "description": "Smart EQ Music Player in Sophisticated Dark design, featuring local audio file streaming, 10-band interactive Web Audio Equalizer, and smart headphone correction matching.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
