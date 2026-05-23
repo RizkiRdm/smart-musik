@@ -29,8 +29,16 @@ import NowPlayingPanel from './components/NowPlayingPanel';
 import MiniPlayer from './components/MiniPlayer';
 import EQFeedbackPill from './components/EQFeedbackPill';
 import LyricsPanel from './components/LyricsPanel';
+import { AppInitLoader } from './components/AppInitLoader';
+import { useUIStore } from './stores/uiStore';
 
 export default function App() {
+  const isInitializing = useUIStore(state => state.isInitializing);
+
+  if (isInitializing) {
+    return <AppInitLoader />;
+  }
+
   // STATE MANAGEMENTS
   const [activeTab, setActiveTab] = useState<'library' | 'settings'>('library');
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -376,11 +384,12 @@ export default function App() {
       
       const track: Track = {
         id,
-        name: file.name,
+        fileName: file.name,
         fileSize: file.size,
         title: file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, ' '), // Clean name
         artist: 'IMPORTED LOCAL SIGNAL',
         duration: 210, // Default baseline estimate of 3:30 min, gets computed correctly upon file decode
+        durationMs: 210 * 1000,
         format: file.name.split('.').pop() || 'wav',
         hasEQ: false,
         audioFeatures: audioService.generateFeaturesForTrack(file.name, 210),
@@ -526,14 +535,13 @@ export default function App() {
 
     // Save feedback log item
     const feedback: FeedbackLog = {
-      id: `feedback-${Date.now()}`,
       trackId: activeTrack.id,
       headphoneId: activeHeadphone.id,
       signal: 'like',
       generation: mlGeneration,
       listenDurationMs: listeningMs,
       createdAt: Date.now()
-    };
+    } as any; // Cast for now as v1 storage expects it
     await dbInstance.saveFeedback(feedback);
 
     setShowFeedbackPill(false);
@@ -567,14 +575,13 @@ export default function App() {
 
     // Save disliking diagnostic logs
     const feedback: FeedbackLog = {
-      id: `feedback-${Date.now()}`,
       trackId: activeTrack.id,
       headphoneId: activeHeadphone.id,
       signal: 'dislike',
       generation: mlGeneration,
       listenDurationMs: listeningMs,
       createdAt: Date.now()
-    };
+    } as any;
     await dbInstance.saveFeedback(feedback);
 
     // Temporarily trigger shake/re-evaluation

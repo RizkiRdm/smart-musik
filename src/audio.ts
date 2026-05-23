@@ -114,7 +114,7 @@ class AudioManager {
   // Headphone Correction Curve + Track Spectral features + Current Mood biases
   // Outputting the calibrated 10-band target EQ setting
   public generateAIEQPredict(headphone: HeadphoneProfile, track: Track, mood?: 'chill' | 'energetic' | 'focus' | 'melancholic' | 'default'): number[] {
-    const features = track.audioFeatures || this.generateFeaturesForTrack(track.name, track.duration);
+    const features = track.audioFeatures || this.generateFeaturesForTrack(track.fileName, track.duration);
     
     // Core correction curve from AutoEQ profile (form the baseline)
     const curve = [...headphone.correctionCurve];

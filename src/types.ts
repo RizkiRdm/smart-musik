@@ -6,23 +6,25 @@ export interface AudioFeatures {
 }
 
 export interface Track {
-  id: string;
-  name: string;        // full filename
+  id: string;          // SHA256 of fileName + fileSize
+  fileName: string;    // original file name
   fileSize: number;
-  title: string;       // track title or parsed filename
+  title: string;       // parsed from metadata or fileName
   artist?: string;
   album?: string;
-  duration: number;    // duration in seconds
+  duration: number;    // duration in seconds (for UI convenience)
+  durationMs: number;  // duration in milliseconds
   format: string;      // mp3, wav, ogg, etc.
   hasEQ: boolean;
   audioFeatures: AudioFeatures | null;
-  fileObject?: File;   // in-memory storage of the handle/File for active sessions
+  fileObject?: File;   // in-memory File object
+  fileHandle?: FileSystemFileHandle | null; // for File System Access API
   addedAt: number;
-  genre?: string;      // Dynamic genre assignment
-  playCount?: number;  // SMART SHUFFLE Play Count tracking
-  lastPlayedAt?: number; // SMART SHUFFLE Last history track
-  moodTag?: 'chill' | 'energetic' | 'focus' | 'melancholic' | 'default'; // Playback mood matching
-  lyrics?: string;     // Embedded karaoke synced lyrics
+  genre?: string;
+  playCount?: number;
+  lastPlayedAt?: number;
+  moodTag?: 'chill' | 'energetic' | 'focus' | 'melancholic' | 'default';
+  lyrics?: string;
 }
 
 export interface EQSetting {
@@ -43,7 +45,7 @@ export interface HeadphoneProfile {
 }
 
 export interface FeedbackLog {
-  id: string;
+  id: number;          // autoIncrement
   trackId: string;
   headphoneId: string;
   signal: 'like' | 'dislike';
