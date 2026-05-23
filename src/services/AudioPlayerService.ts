@@ -1,6 +1,10 @@
 import { usePlaybackStore } from '../stores/playbackStore';
-import { Track } from '../types';
+import { Track, EQSetting } from '../types';
 import { eqService } from './EQService';
+import { libraryService } from './LibraryService';
+import { mlService } from './MLService';
+import { getDB } from '../storage/db';
+import { useEQStore } from '../stores/eqStore';
 
 class AudioPlayerService {
   private static instance: AudioPlayerService;
@@ -23,8 +27,7 @@ class AudioPlayerService {
     });
 
     this.audioElement.addEventListener('ended', () => {
-      // Logic for next track should be handled by a hook or higher level service
-      usePlaybackStore.getState().setPlaying(false);
+      this.handleEnded();
     });
   }
 
@@ -33,6 +36,21 @@ class AudioPlayerService {
       AudioPlayerService.instance = new AudioPlayerService();
     }
     return AudioPlayerService.instance;
+  }
+
+  private async handleEnded() {
+    const state = usePlaybackStore.getState();
+    if (state.repeatMode === 'one') {
+      this.audioElement.currentTime = 0;
+      this.audioElement.play();
+    } else {
+      const next = libraryService.getNextTrack(state.currentTrack, state.isShuffle, state.playbackMood);
+      if (next) {
+        await this.play(next);
+      } else {
+        state.setPlaying(false);
+      }
+    }
   }
 
   public init() {
@@ -68,8 +86,53 @@ class AudioPlayerService {
       this.audioElement.src = url;
       this.audioElement.play();
       
-      usePlaybackStore.getState().setCurrentTrack(track);
+      // Update metadata in library
+      const updatedTrack = {
+        ...track,
+        playCount: (track.playCount || 0) + 1,
+        lastPlayedAt: Date.now()
+      };
+      libraryService.updateTrack(updatedTrack);
+
+      usePlaybackStore.getState().setCurrentTrack(updatedTrack);
       usePlaybackStore.getState().setPlaying(true);
+
+      this.handleEQPrediction(updatedTrack);
+    }
+  }
+
+  private async handleEQPrediction(track: Track) {
+    const db = await getDB();
+    const activeHp = useEQStore.getState().activeHeadphone;
+    
+    if (activeHp) {
+      const existing = await db.getAllFromIndex('eq_settings', 'by-track-headphone', [track.id, activeHp.id]);
+      
+      if (existing.length > 0) {
+        const latest = existing.sort((a, b) => b.generation - a.generation)[0];
+        eqService.applyBands(latest.bands);
+        useEQStore.getState().setEQBands(latest.bands);
+        useEQStore.getState().setMLGeneration(latest.generation);
+      } else if (track.audioFeatures) {
+        const bands = mlService.predictEQ(track.audioFeatures, activeHp);
+        eqService.applyBands(bands);
+        useEQStore.getState().setEQBands(bands);
+        useEQStore.getState().setMLGeneration(0);
+
+        const eqSetting: EQSetting = {
+          trackId: track.id,
+          headphoneId: activeHp.id,
+          generation: 0,
+          bands,
+          isDefault: true,
+          source: 'ml_initial',
+          createdAt: Date.now()
+        };
+        await db.put('eq_settings', eqSetting);
+      }
+    } else {
+      eqService.reset();
+      useEQStore.getState().setEQBands(Array(10).fill(0));
     }
   }
 

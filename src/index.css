@@ -2,23 +2,124 @@
 
 @theme {
   --font-serif: "Playfair Display", Georgia, serif;
+  --color-accent: #C8FF00;
+}
+
+@layer base {
+  body {
+    @apply bg-zinc-950 text-white font-sans antialiased;
+  }
+
+  * {
+    @apply rounded-none border-black;
+  }
+}
+
+@layer components {
+  /* Use explicit classes since Tailwind 4 @apply with custom utilities in same file can be flaky */
+  .brutal-border {
+    border-width: 3px;
+    border-style: solid;
+    border-color: black;
+  }
+
+  .brutal-shadow {
+    box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+  }
+
+  .brutal-shadow-accent {
+    box-shadow: 4px 4px 0px 0px #C8FF00;
+  }
+
+  .brutal-card {
+    background-color: white;
+    color: black;
+    padding: 1rem;
+    border-width: 3px;
+    border-style: solid;
+    border-color: black;
+    box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+  }
+
+  .brutal-button {
+    background-color: var(--color-accent);
+    color: black;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    border-width: 3px;
+    border-style: solid;
+    border-color: black;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+  
+  .brutal-button:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px 0px rgba(0,0,0,1);
+  }
+
+  .brutal-button:active {
+    transform: translate(0, 0);
+    box-shadow: none;
+  }
+
+  .brutal-button-secondary {
+    background-color: white;
+    color: black;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    border-width: 3px;
+    border-style: solid;
+    border-color: black;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+
+  .brutal-button-secondary:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px 0px rgba(0,0,0,1);
+  }
+
+  .brutal-button-secondary:active {
+    transform: translate(0, 0);
+    box-shadow: none;
+  }
+
+  .brutal-input {
+    background-color: white;
+    color: black;
+    padding: 0.5rem 0.75rem;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    border-width: 3px;
+    border-style: solid;
+    border-color: black;
+  }
+
+  .brutal-input:focus {
+    box-shadow: 4px 4px 0px 0px #C8FF00;
+  }
 }
 
 /* Custom premium dark scrollbar styling */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+  background: #000;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 999px;
+  background: #C8FF00;
+  border: 2px solid #000;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(249, 115, 22, 0.4);
+  background: #a3cc00;
 }

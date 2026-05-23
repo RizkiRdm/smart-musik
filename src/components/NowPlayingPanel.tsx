@@ -1,6 +1,6 @@
-import { Disc, Heart, Sliders, Volume2 } from 'lucide-react';
+import { Disc, Sliders, Volume2 } from 'lucide-react';
 import { Track, HeadphoneProfile } from '../types';
-import { EQ_FREQUENCIES, audioService } from '../audio';
+import { mlService } from '../services/MLService';
 
 interface NowPlayingPanelProps {
   track: Track | null;
@@ -42,59 +42,46 @@ export default function NowPlayingPanel({
     onEQBandsChange(updated);
   };
 
-  const bandColors = [
-    '#f97316', // 60Hz - orange-500
-    '#ea580c', // 150Hz - orange-600
-    '#f97316', // 400Hz - orange-500
-    '#f59e0b', // 1kHz - amber-500
-    '#d97706', // 2.5kHz - amber-650
-    '#f59e0b', // 4kHz - amber-500
-    '#fb923c', // 6.3kHz - orange-400
-    '#f59e0b', // 10kHz - amber-500
-    '#ea580c', // 14kHz - orange-600
-    '#f97316', // 16kHz - orange-500
-  ];
-
-  const freqLabels = ['60Hz', '150Hz', '400Hz', '1kHz', '2.5kHz', '4kHz', '6.3kHz', '10Hz', '14kHz', '16kHz'];
+  const freqLabels = ['60Hz', '150Hz', '400Hz', '1kHz', '2.5kHz', '4kHz', '6.3kHz', '10kHz', '14kHz', '16kHz'];
 
   return (
-    <aside className="w-[320px] bg-[#050505] border-l border-white/10 flex flex-col h-full z-10 shrink-0 select-none">
+    <aside className="w-[340px] bg-zinc-900 border-l-4 border-black flex flex-col h-full z-10 shrink-0 select-none">
       {track ? (
         <div className="flex-1 flex flex-col overflow-y-auto custom-scrollbar p-6 gap-6">
           
           {/* Cover Art Frame */}
-          <div className="aspect-square w-full rounded-2xl border border-white/10 relative bg-white/[0.02] flex items-center justify-center overflow-hidden shadow-2xl shadow-orange-500/5">
-            <Disc className={`w-32 h-32 text-white/10 ${isPlaying ? 'animate-[spin_10s_linear_infinite]' : ''}`} />
-            <div className="absolute inset-x-0 bottom-0 bg-black/70 backdrop-blur-md border-t border-white/10 px-3 py-2.5 flex items-center justify-between">
-              <span className="font-mono text-[9px] text-orange-400 border border-orange-500/30 rounded-lg px-2 py-0.5 tracking-widest font-bold bg-orange-950/20">NOW PLAYING</span>
-              <span className="font-mono text-[9px] text-white/40 uppercase">{track.format} // {track.fileSize > 1024 * 1024 ? `${(track.fileSize / (1024 * 1024)).toFixed(1)}MB` : `${(track.fileSize / 1024).toFixed(0)}KB`}</span>
+          <div className="aspect-square w-full brutal-border relative bg-white flex items-center justify-center overflow-hidden shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+            <Disc className={`w-36 h-36 text-black/10 ${isPlaying ? 'animate-[spin_8s_linear_infinite]' : ''}`} />
+            <div className="absolute inset-x-0 bottom-0 bg-accent border-t-4 border-black px-4 py-3 flex items-center justify-between">
+              <span className="font-black text-[11px] text-black uppercase tracking-tighter">SIGNAL ACTIVE</span>
+              <span className="font-mono text-[10px] text-black/60 font-black uppercase">{track.format}</span>
             </div>
           </div>
 
           {/* Metadata Block */}
-          <div>
-            <h3 className="font-sans text-base font-bold text-white truncate leading-tight">
+          <div className="bg-white brutal-border p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            <h3 className="font-black text-lg text-black truncate uppercase tracking-tighter leading-none">
               {track.title}
             </h3>
-            <p className="font-sans text-xs text-white/40 mt-1.5 truncate">
-              {track.artist || 'IMPORTED LOCAL SIGNAL'}
+            <p className="font-mono text-xs text-black/50 mt-1.5 truncate font-bold">
+              {track.artist || 'UNKNOWN SOURCE'}
             </p>
           </div>
 
           {/* Hardware EQ Console */}
-          <div className="border border-white/10 bg-white/[0.01] rounded-2xl p-4 relative">
-            <div className="absolute top-0 left-4 -translate-y-1/2 bg-[#050505] px-2 flex items-center gap-1.5">
-              <Sliders className="w-3.5 h-3.5 text-orange-500" />
-              <span className="font-mono text-[10px] text-orange-400 font-bold uppercase tracking-wider">HARDWARE CONSOLE</span>
+          <div className="bg-white brutal-border p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex flex-col">
+            <div className="flex items-center gap-2 mb-4">
+              <Sliders className="w-5 h-5 text-black" />
+              <span className="font-black text-xs text-black uppercase tracking-widest">HARDWARE CONSOLE</span>
             </div>
 
             {/* EQ Sliders Grid */}
-            <div className="grid grid-cols-5 gap-y-4 gap-x-2 mt-2">
+            <div className="grid grid-cols-5 gap-y-6 gap-x-2">
               {eqBands.map((bandValue, index) => (
-                <div key={index} className="flex flex-col items-center gap-1.5">
-                  <span className="font-mono text-[8px] text-white/40 font-semibold tracking-tighter uppercase">{freqLabels[index]}</span>
+                <div key={index} className="flex flex-col items-center gap-2">
+                  <span className="font-mono text-[8px] text-black font-black uppercase">{freqLabels[index]}</span>
                   {/* Vertical Slider Simulation */}
-                  <div className="relative h-20 w-4 flex items-center justify-center bg-white/5 border border-white/15 rounded-full overflow-hidden">
+                  <div className="relative h-24 w-6 brutal-border bg-zinc-100 flex items-center justify-center">
                     <input
                       type="range"
                       min="-12"
@@ -102,25 +89,22 @@ export default function NowPlayingPanel({
                       step="0.5"
                       value={bandValue}
                       onChange={(e) => handleSliderChange(index, Number(e.target.value))}
-                      className="absolute accent-orange-500 h-full w-full opacity-100 cursor-pointer"
+                      className="absolute h-full w-full opacity-0 cursor-pointer z-10"
                       style={{
                         writingMode: 'vertical-lr',
                         direction: 'rtl',
-                        WebkitAppearance: 'none',
-                        background: 'transparent'
+                        WebkitAppearance: 'none'
                       }}
                     />
                     {/* Fill track visualizer */}
                     <div 
-                      className="absolute w-1 pointer-events-none rounded-full"
+                      className="absolute w-full bottom-0 bg-accent border-t-2 border-black pointer-events-none"
                       style={{
-                        bottom: '0',
                         height: `${((bandValue + 12) / 24) * 100}%`,
-                        backgroundColor: bandColors[index],
                       }}
                     />
                   </div>
-                  <span className="font-mono text-[8px] font-bold tabular-nums" style={{ color: bandColors[index] }}>
+                  <span className="font-mono text-[9px] font-black text-black">
                     {bandValue > 0 ? `+${bandValue}` : bandValue}
                   </span>
                 </div>
@@ -128,55 +112,53 @@ export default function NowPlayingPanel({
             </div>
 
             {/* Preset and Helpers */}
-            <div className="flex gap-2 mt-4 pt-4 border-t border-white/10 grid grid-cols-2">
+            <div className="grid grid-cols-2 gap-3 mt-6 pt-6 border-t-2 border-black">
               <button
                 onClick={() => onEQBandsChange(Array(10).fill(0))}
-                className="text-center font-sans text-[10px] text-white/60 hover:text-white py-1.5 border border-white/10 hover:border-white/30 rounded-xl uppercase transition-all duration-300"
+                className="brutal-button-secondary py-2 text-[10px]"
               >
-                Flat Curve
+                FLAT
               </button>
               <button
                 onClick={() => {
-                  if (activeHeadphone) {
-                    const aiBands = audioService.generateAIEQPredict(activeHeadphone, track);
+                  if (activeHeadphone && track.audioFeatures) {
+                    const aiBands = mlService.predictEQ(track.audioFeatures, activeHeadphone);
                     onEQBandsChange(aiBands);
                   }
                 }}
-                disabled={!activeHeadphone}
-                className={`text-center font-sans text-[10px] py-1.5 border rounded-xl uppercase transition-all duration-300 ${
-                  activeHeadphone 
-                    ? 'border-orange-500/20 text-orange-400 hover:bg-orange-500/10' 
-                    : 'border-white/5 text-white/20 cursor-not-allowed'
-                }`}
+                disabled={!activeHeadphone || !track.audioFeatures}
+                className="brutal-button py-2 text-[10px] disabled:bg-zinc-100 disabled:text-black/20 disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0"
               >
-                Auto-Calibrate
+                AUTO
               </button>
             </div>
           </div>
 
           {/* Volume Deck */}
-          <div className="flex items-center gap-3 border border-white/10 rounded-xl px-4 py-3 bg-white/[0.01]">
-            <Volume2 className="w-4 h-4 text-white/40 shrink-0" />
+          <div className="flex items-center gap-4 bg-white brutal-border px-4 py-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            <Volume2 className="w-5 h-5 text-black shrink-0" />
             <div className="flex-1 relative flex items-center">
               <input
                 type="range"
                 min="0"
                 max="100"
-                value={volume * 105}
+                value={volume * 100}
                 onChange={(e) => onVolumeChange(Number(e.target.value) / 100)}
-                className="w-full accent-orange-500 h-1 bg-white/10 appearance-none cursor-pointer rounded-full"
+                className="w-full h-3 brutal-border bg-zinc-100 appearance-none accent-black cursor-pointer"
               />
             </div>
-            <span className="font-mono text-[10px] text-white/60 tabular-nums">{(volume * 100).toFixed(0)}%</span>
+            <span className="font-mono text-[11px] text-black font-black">{(volume * 100).toFixed(0)}%</span>
           </div>
 
         </div>
       ) : (
-        <div className="flex-grow flex flex-col items-center justify-center p-8 text-center">
-          <Disc className="w-12 h-12 text-white/10 mb-4 animate-[spin_10s_linear_infinite]" />
-          <h4 className="font-serif italic text-sm text-white/60 leading-none">Console Dormant</h4>
-          <p className="text-[10px] text-white/30 font-sans mt-2 max-w-[200px] leading-relaxed">
-            Please select any audio signal track to activate the hardware visualizers.
+        <div className="flex-grow flex flex-col items-center justify-center p-10 text-center">
+          <div className="w-20 h-20 brutal-border bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center mb-6">
+            <Disc className="w-10 h-10 text-black/10 animate-[spin_8s_linear_infinite]" />
+          </div>
+          <h4 className="font-black text-sm text-accent uppercase tracking-widest">CONSOLE DORMANT</h4>
+          <p className="font-mono text-[10px] text-white/40 mt-3 max-w-[220px] leading-relaxed font-bold">
+            LOAD AUDIO DATA SOURCE TO ACTIVATE HARDWARE INTERFACE.
           </p>
         </div>
       )}

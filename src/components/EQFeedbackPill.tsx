@@ -9,53 +9,38 @@ interface EQFeedbackPillProps {
 }
 
 export default function EQFeedbackPill({ isVisible, onLike, onDislike, eqBands }: EQFeedbackPillProps) {
-  const bandColors = [
-    '#f97316', // 60Hz - orange-500
-    '#ea580c', // 150Hz
-    '#f97316', // 400Hz
-    '#f59e0b', // 1kHz - amber-500
-    '#d97706', // 2.5kHz
-    '#f59e0b', // 4kHz
-    '#fb923c', // 6.3kHz - orange-400
-    '#f59e0b', // 10kHz
-    '#ea580c', // 14kHz
-    '#f97316', // 16kHz
-  ];
-
   return (
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          initial={{ y: 80, x: '-50%', opacity: 0 }}
+          initial={{ y: 100, x: '-50%', opacity: 0 }}
           animate={{ y: 0, x: '-50%', opacity: 1 }}
-          exit={{ y: 80, x: '-50%', opacity: 0 }}
-          transition={{ duration: 0.25, ease: 'easeOut' }}
-          className="fixed bottom-[96px] left-1/2 z-30 transform -translate-x-1/2 select-none"
+          exit={{ y: 100, x: '-50%', opacity: 0 }}
+          transition={{ type: 'spring', damping: 15, stiffness: 200 }}
+          className="fixed bottom-[112px] left-1/2 z-30 transform -translate-x-1/2 select-none"
         >
           {/* Main Pill Box */}
-          <div className="bg-[#0e0e0e]/95 border border-white/10 p-4 rounded-2xl flex flex-col md:flex-row items-center gap-4 min-w-[360px] md:min-w-[420px] shadow-2xl shadow-orange-500/10 backdrop-blur-md">
+          <div className="bg-accent brutal-border p-6 flex flex-col md:flex-row items-center gap-6 min-w-[400px] md:min-w-[500px] shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
             
             {/* Left AI indicators */}
-            <div className="flex flex-col gap-1 items-start shrink-0 mr-1">
-              <span className="flex items-center gap-1.5 font-sans text-[10px] text-orange-400 font-bold uppercase tracking-wider">
-                <Sparkles className="w-3.5 h-3.5 text-orange-500 fill-orange-500/10" />
-                AI RECOMMENDER
+            <div className="flex flex-col gap-1 items-start shrink-0">
+              <span className="flex items-center gap-2 font-black text-xs text-black uppercase tracking-widest">
+                <Sparkles className="w-4 h-4 text-black fill-current" />
+                AI RECOMMENDATION
               </span>
-              <span className="text-[9px] text-white/40 font-sans tracking-tight">Evaluate current predictive EQ curve</span>
+              <span className="text-[10px] text-black/60 font-mono font-bold uppercase">Evaluate predictive curve</span>
             </div>
 
             {/* Middle: mini static EQ visualization bars */}
-            <div className="flex h-8 items-end gap-[3px] bg-white/5 px-2 py-1.5 border border-white/10 rounded-xl w-24 justify-between overflow-hidden">
+            <div className="flex h-12 items-end gap-[4px] bg-black px-3 py-2 brutal-border w-32 justify-between overflow-hidden shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
               {eqBands.map((band, idx) => {
-                // Height ratio from -12dB (0%) to +12dB (100%)
                 const heightPercent = Math.max(15, Math.min(100, ((band + 12) / 24) * 100));
                 return (
                   <div
                     key={idx}
-                    className="w-1 rounded-t-full transition-all duration-300"
+                    className="w-1.5 bg-accent transition-all duration-300"
                     style={{
                       height: `${heightPercent}%`,
-                      backgroundColor: bandColors[idx]
                     }}
                   />
                 );
@@ -63,28 +48,24 @@ export default function EQFeedbackPill({ isVisible, onLike, onDislike, eqBands }
             </div>
 
             {/* Right: Actions */}
-            <div className="flex items-center gap-2 w-full md:w-auto mt-2 md:mt-0">
+            <div className="flex items-center gap-3 w-full md:w-auto mt-4 md:mt-0">
               {/* DISLIKE */}
-              <motion.button
-                whileTap={{ scale: 0.92 }}
+              <button
                 onClick={onDislike}
-                className="flex-1 md:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/10 hover:border-red-500/50 text-white/60 hover:text-red-400 hover:bg-red-500/5 font-sans text-[10px] font-bold uppercase cursor-pointer transition-colors duration-200"
-                title="Slightly adjust EQ curve with RL perturbation algorithms"
+                className="flex-1 md:flex-initial flex items-center justify-center gap-2 px-4 py-2 brutal-border bg-white text-black font-black text-[11px] uppercase cursor-pointer hover:bg-zinc-100 transition-all active:translate-y-1 active:shadow-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
               >
-                <ThumbsDown className="w-3.5 h-3.5" />
-                <span>Adjust</span>
-              </motion.button>
+                <ThumbsDown className="w-4 h-4" />
+                <span>ADJUST</span>
+              </button>
 
               {/* LIKE */}
-              <motion.button
-                whileTap={{ scale: 0.92 }}
+              <button
                 onClick={onLike}
-                className="flex-1 md:flex-initial flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-xl border border-orange-500/30 text-orange-400 hover:text-white hover:bg-orange-500/10 font-sans text-[10px] font-bold uppercase cursor-pointer transition-colors duration-200"
-                title="Looks good! Set this as my local target profile"
+                className="flex-1 md:flex-initial flex items-center justify-center gap-2 px-5 py-2 brutal-border bg-black text-accent font-black text-[11px] uppercase cursor-pointer hover:bg-zinc-900 transition-all active:translate-y-1 active:shadow-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
               >
-                <ThumbsUp className="w-3.5 h-3.5" />
-                <span>Save</span>
-              </motion.button>
+                <ThumbsUp className="w-4 h-4" />
+                <span>SAVE</span>
+              </button>
             </div>
 
           </div>

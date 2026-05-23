@@ -47,24 +47,24 @@ export default function LibraryPage({
   };
 
   return (
-    <div className="flex-grow flex flex-col h-full bg-[#050505] p-6 select-none overflow-hidden">
+    <div className="flex-grow flex flex-col h-full bg-[#111] p-8 select-none overflow-hidden">
       
       {/* Top action header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 shrink-0">
-        <div>
-          <h2 className="font-serif italic text-2xl text-white flex items-center gap-2">
-            <Library className="w-5 h-5 text-orange-500" />
-            Track Collection
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8 shrink-0">
+        <div className="bg-white brutal-border p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+          <h2 className="font-black text-2xl text-black flex items-center gap-3 uppercase tracking-tighter">
+            <Library className="w-6 h-6 text-black" />
+            Collection
           </h2>
-          <p className="font-sans text-xs text-white/40 mt-1">Local Indexed Database Library</p>
+          <p className="font-mono text-[10px] text-black/50 mt-1 font-bold uppercase tracking-widest">LOCAL_SIGNAL_DATABASE</p>
         </div>
 
         <button
           onClick={() => fileInputRef.current?.click()}
-          className="flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-black px-4 py-2.5 font-sans text-xs font-bold uppercase transition-all duration-300 rounded-xl shadow-lg shadow-orange-500/15"
+          className="brutal-button px-6 py-4 text-sm flex items-center gap-3"
         >
-          <Plus className="w-4 h-4" />
-          Import Music
+          <Plus className="w-5 h-5" />
+          IMPORT DATA
         </button>
         <input
           type="file"
@@ -78,19 +78,19 @@ export default function LibraryPage({
 
       {/* Search Input Filter */}
       {tracks.length > 0 && (
-        <div className="relative mb-6 shrink-0">
+        <div className="relative mb-8 shrink-0 max-w-md">
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search matching title, artist, or genre..."
-            className="w-full max-w-sm bg-white/5 border border-white/10 px-10 py-2.5 rounded-xl font-sans text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-orange-500 transition-colors"
+            placeholder="FILTER BY TITLE, ARTIST, GENRE..."
+            className="w-full bg-white brutal-border px-12 py-4 font-black text-xs text-black placeholder:text-black/30 focus:outline-none focus:shadow-[4px_4px_0px_0px_#C8FF00] transition-all"
           />
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-black" />
           {searchQuery && (
             <button 
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white font-sans text-[10px] font-bold"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-black font-black text-[10px] hover:text-accent transition-colors"
             >
               CLEAR
             </button>
@@ -101,40 +101,34 @@ export default function LibraryPage({
       {/* Main Collection Container */}
       <div className="flex-1 min-h-[300px] flex flex-col overflow-hidden">
         {tracks.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center p-8 border border-dashed border-white/10 bg-white/[0.01] rounded-2xl text-center min-h-[350px]">
-            <div className="w-16 h-16 rounded-2xl border border-white/10 bg-white/5 flex items-center justify-center mb-4 text-white/30">
-              <Music className="w-8 h-8" />
+          <div className="flex-1 flex flex-col items-center justify-center p-12 brutal-border border-dashed bg-white/5 text-center min-h-[350px]">
+            <div className="w-20 h-20 brutal-border bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center mb-6 text-black/20">
+              <Music className="w-10 h-10" />
             </div>
-            <h3 className="font-serif italic text-lg text-white">No tracks loaded yet</h3>
-            <p className="font-sans text-xs text-white/40 mt-1.5 max-w-[280px]">
-              Import local audio files (such as MP3 or WAV) to start calibrating frequency compensation bands.
+            <h3 className="font-black text-xl text-white uppercase tracking-tighter">LIBRARY_EMPTY</h3>
+            <p className="font-mono text-xs text-white/40 mt-3 max-w-[320px] font-bold">
+              NO LOCAL SIGNALS DETECTED. IMPORT AUDIO FILES TO BEGIN CALIBRATION.
             </p>
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="mt-6 flex items-center gap-2 bg-white/5 border border-white/10 hover:border-orange-500/50 text-white/80 hover:text-white px-5 py-2.5 font-sans text-xs font-bold uppercase transition-all rounded-xl duration-300"
+              className="mt-8 brutal-button-secondary flex items-center gap-3 px-6"
             >
-              <Plus className="w-4 h-4" />
-              Add Audio Tracks
+              <Plus className="w-5 h-5" />
+              UPLOAD TRACKS
             </button>
           </div>
-        ) : filteredTracks.length === 0 ? (
-          <div className="p-8 text-center flex flex-col items-center justify-center h-48 border border-dashed border-white/10 rounded-2xl">
-            <Search className="w-8 h-8 text-white/20 mb-2" />
-            <p className="font-sans text-white/40text-xs uppercase font-semibold">No matched tracks</p>
-            <p className="text-white/30 text-xs mt-1">Refine your filtration keywords</p>
-          </div>
         ) : (
-          <div className="border border-white/10 bg-white/[0.01] rounded-2xl overflow-hidden shadow-2xl shadow-orange-500/5 flex flex-col flex-1">
+          <div className="bg-white brutal-border overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col flex-1">
             {/* Table Header */}
-            <div className="grid grid-cols-[48px_1fr_120px_88px] items-center px-4 py-3 bg-white/[0.03] border-b border-white/10 font-sans text-[10px] text-white/40 uppercase tracking-widest leading-none font-bold shrink-0">
-              <span>#</span>
-              <span>Track Details</span>
-              <span>Duration / Genre</span>
-              <span className="text-center">Action</span>
+            <div className="grid grid-cols-[60px_1fr_140px_100px] items-center px-6 py-4 bg-black border-b-4 border-black font-black text-[11px] text-accent uppercase tracking-[0.2em] shrink-0">
+              <span>IDX</span>
+              <span>DATA_STREAM</span>
+              <span>METRICS</span>
+              <span className="text-center">OPS</span>
             </div>
 
             {/* Scrollable Tracks List */}
-            <div className="divide-y divide-white/5 overflow-y-auto flex-1 custom-scrollbar">
+            <div className="overflow-y-auto flex-1 custom-scrollbar bg-zinc-50">
               {filteredTracks.map((track, index) => {
                 const isActive = track.id === activeTrackId;
                 const isEditing = editingTrackId === track.id;
@@ -142,118 +136,113 @@ export default function LibraryPage({
                 return (
                   <React.Fragment key={track.id}>
                     <div
-                      className={`grid grid-cols-[48px_1fr_120px_88px] items-center px-4 py-3 hover:bg-white/[0.04] hover:shadow-[inset_0_0_20px_rgba(249,115,22,0.02)] group transition-all duration-300 ease-out select-none ${
-                        isActive ? 'bg-white/[0.05] border-l-4 border-orange-500 pl-3' : 'border-l-4 border-transparent hover:border-l-white/10'
+                      className={`grid grid-cols-[60px_1fr_140px_100px] items-center px-6 py-5 border-b-2 border-black/10 hover:bg-accent/5 transition-all group select-none ${
+                        isActive ? 'bg-accent/10 border-l-8 border-l-black' : 'border-l-8 border-l-transparent'
                       }`}
                     >
                       {/* Index or Play icon on hover */}
                       <div 
                         onClick={() => onPlayTrack(track)}
-                        className="font-mono text-[11px] text-white/30 cursor-pointer group-hover:text-orange-400"
+                        className="font-mono text-xs text-black font-black cursor-pointer"
                       >
                         <span className="group-hover:hidden">{String(index + 1).padStart(2, '0')}</span>
-                        <Play className="hidden group-hover:block w-3.5 h-3.5 text-orange-500 fill-orange-500/10" />
+                        <Play className="hidden group-hover:block w-4 h-4 text-black fill-current" />
                       </div>
 
                       {/* Meta and metadata names */}
                       <div 
                         onClick={() => onPlayTrack(track)}
-                        className="flex items-center gap-3 overflow-hidden cursor-pointer"
+                        className="flex items-center gap-4 overflow-hidden cursor-pointer"
                       >
-                        <div className="w-9 h-9 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center shrink-0">
-                          <Music className={`w-4 h-4 ${isActive ? 'text-orange-400 animate-pulse' : 'text-white/30'}`} />
+                        <div className={`w-11 h-11 brutal-border flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${isActive ? 'bg-accent' : 'bg-white'}`}>
+                          <Music className={`w-5 h-5 text-black ${isActive ? 'animate-pulse' : ''}`} />
                         </div>
-                        <div className="overflow-hidden pr-2">
-                          <p className={`font-sans text-sm font-semibold truncate leading-tight ${isActive ? 'text-orange-400' : 'text-white/80'} group-hover:text-orange-400`}>
+                        <div className="overflow-hidden pr-4">
+                          <p className={`font-black text-sm truncate uppercase tracking-tighter leading-none ${isActive ? 'text-black' : 'text-black/80'}`}>
                             {track.title}
                           </p>
-                          <p className="font-sans text-xs text-white/40 truncate mt-1">
-                            {track.artist || 'Unknown Artist'} {track.album ? `// ${track.album}` : ''}
+                          <p className="font-mono text-[10px] text-black/50 truncate mt-1.5 font-bold uppercase">
+                            {track.artist || 'UNKNOWN'} {track.album ? `// ${track.album}` : ''}
                           </p>
                         </div>
                       </div>
 
                       {/* Duration and Genre flag */}
-                      <div className="flex flex-col gap-1 items-start justify-center">
-                        <span className="font-mono text-xs tabular-nums text-white/40">
+                      <div className="flex flex-col gap-1.5 items-start justify-center">
+                        <span className="font-mono text-[11px] tabular-nums text-black font-black">
                           {formatDurationBySeconds(track.duration)}
                         </span>
                         {track.genre ? (
-                          <span className="font-mono text-[8px] px-1.5 py-0.5 rounded bg-white/5 text-orange-400/80 border border-white/5 uppercase font-bold tracking-wider truncate max-w-[100px]">
+                          <span className="font-mono text-[9px] px-2 py-0.5 brutal-border bg-black text-accent uppercase font-black tracking-wider truncate max-w-[120px]">
                             {track.genre}
                           </span>
                         ) : (
-                          <span className="font-mono text-[8px] text-white/20 uppercase tracking-widest italic">
-                            No genre
+                          <span className="font-mono text-[9px] text-black/30 uppercase font-bold italic">
+                            NULL_GENRE
                           </span>
                         )}
                       </div>
 
-                      {/* Utility controllers (Edit detail tag toggle, delete action) */}
-                      <div className="flex items-center justify-center gap-1.5">
-                        {/* TAG MODIFIER */}
+                      {/* Utility controllers */}
+                      <div className="flex items-center justify-center gap-2">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             setEditingTrackId(isEditing ? null : track.id);
                           }}
-                          className={`p-1.5 rounded-lg border transition-all ${
+                          className={`p-2 brutal-border transition-all ${
                             isEditing 
-                              ? 'border-orange-500/30 text-orange-400 bg-orange-500/5' 
-                              : 'border-white/5 text-white/30 hover:text-white hover:bg-white/5'
+                              ? 'bg-black text-accent shadow-[2px_2px_0px_0px_#C8FF00]' 
+                              : 'bg-white text-black hover:bg-accent'
                           }`}
-                          title="Configure Track Mood & Genre"
                         >
-                          <Tag className="w-3.5 h-3.5" />
+                          <Tag className="w-4 h-4" />
                         </button>
 
-                        {/* DELETE */}
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             onDeleteTrack(track.id);
                           }}
-                          className="p-1.5 text-white/30 hover:text-red-400 rounded-lg hover:bg-red-500/5 border border-transparent transition-all"
-                          title="Remove track"
+                          className="p-2 brutal-border bg-white text-black hover:bg-red-500 hover:text-white transition-all"
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
 
                     </div>
 
-                    {/* Expandable in-playlist meta configuration form drawer */}
+                    {/* Expandable Meta Config */}
                     {isEditing && (
-                      <div className="col-span-full bg-white/[0.01] border-t border-b border-white/10 px-6 py-4 flex flex-col gap-4">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div className="col-span-full bg-accent/5 border-b-4 border-black p-8 flex flex-col gap-6">
+                        <div className="flex flex-col md:flex-row gap-8">
                           
                           {/* Left Option: Change Genre */}
-                          <div className="flex-1 flex flex-col gap-1.5">
-                            <span className="font-mono text-[9px] text-white/40 font-bold uppercase tracking-widest block">GENRE CLASSIFICATION</span>
+                          <div className="flex-1 flex flex-col gap-3">
+                            <span className="font-black text-[10px] text-black uppercase tracking-widest block">GENRE_CLASSIFICATION</span>
                             <input
                               type="text"
                               value={track.genre || ''}
                               onChange={(e) => onUpdateTrack({ ...track, genre: e.target.value })}
-                              placeholder="e.g. Synthwave, Lofi, Rock, Electronic, Piano, Cinematic"
-                              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-xs text-white placeholder:text-white/25 focus:outline-none focus:border-orange-500/60"
+                              placeholder="E.G. TECHNO, AMBIENT, METAL..."
+                              className="w-full bg-white brutal-border px-4 py-3 font-black text-xs text-black placeholder:text-black/20 focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
                             />
                           </div>
 
                           {/* Right Option: Mood Assignment */}
-                          <div className="flex flex-col gap-1.5 shrink-0">
-                            <span className="font-mono text-[9px] text-white/40 font-bold uppercase tracking-widest block">SONG MOOD</span>
-                            <div className="flex gap-1.5 flex-wrap">
-                              {/* Pill selectors */}
+                          <div className="flex flex-col gap-3 shrink-0">
+                            <span className="font-black text-[10px] text-black uppercase tracking-widest block">SONG_MOOD</span>
+                            <div className="flex gap-2 flex-wrap">
                               {(['default', 'chill', 'energetic', 'focus', 'melancholic'] as const).map((moodOption) => {
                                 const isMoodSelected = (track.moodTag || 'default') === moodOption;
                                 return (
                                   <button
                                     key={moodOption}
                                     onClick={() => onUpdateTrack({ ...track, moodTag: moodOption })}
-                                    className={`px-3 py-1.5 rounded-xl font-sans text-[10px] font-bold uppercase border transition-all duration-300 ${
+                                    className={`px-4 py-2 brutal-border font-black text-[10px] uppercase transition-all ${
                                       isMoodSelected 
-                                        ? 'bg-orange-500/15 border-orange-500/50 text-orange-400' 
-                                        : 'bg-white/[0.02] border-white/5 text-white/60 hover:text-white hover:border-white/20'
+                                        ? 'bg-black text-accent shadow-[3px_3px_0px_0px_#C8FF00]' 
+                                        : 'bg-white text-black hover:bg-accent'
                                     }`}
                                   >
                                     {moodOption}
@@ -266,9 +255,9 @@ export default function LibraryPage({
                         </div>
 
                         {/* Stats diagnostics */}
-                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-[9px] font-mono text-white/30 border-t border-white/5 pt-3 gap-2">
-                          <span>STREAM TELEMETRY: {track.playCount || 0} PLAYS REGISTERED</span>
-                          <span>LAST SESSION: {track.lastPlayedAt ? new Date(track.lastPlayedAt).toLocaleString() : 'NEVER STREAMED'}</span>
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-[10px] font-mono font-black text-black/40 border-t-2 border-black/10 pt-4 gap-2">
+                          <span>STREAM_TELEMETRY: {track.playCount || 0} PLAYS</span>
+                          <span>LAST_SESSION: {track.lastPlayedAt ? new Date(track.lastPlayedAt).toLocaleString().toUpperCase() : 'NEVER_STREAMED'}</span>
                         </div>
 
                       </div>

@@ -20,53 +20,50 @@ export default function HeadphoneSelector({ activeProfileId, onSelectProfile }: 
     );
   });
 
-  // Goup of brands
   const brands = Array.from(new Set(filteredHeadphones.map((hp) => hp.brand)));
 
   return (
     <div>
       {/* Selector Launcher Button */}
       <button
-        onClick={() => {
-          setIsOpen(true);
-        }}
-        className="w-full flex items-center justify-between bg-white/[0.03] border border-white/15 px-4 py-3 rounded-xl font-sans text-xs text-white/80 hover:border-orange-500/60 hover:text-white transition-all duration-300"
+        onClick={() => setIsOpen(true)}
+        className="w-full flex items-center justify-between brutal-border bg-white px-4 py-3 text-black hover:bg-accent transition-all shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-y-[2px]"
       >
         <div className="flex items-center gap-2">
-          <Sliders className="w-4 h-4 text-orange-500" />
-          <span className="uppercase tracking-wider font-semibold">
+          <Sliders className="w-5 h-5 text-black" />
+          <span className="font-black text-[11px] uppercase tracking-tighter">
             {activeProfileId 
               ? `${DEFAULT_HEADPHONE_PROFILES.find(h => h.id === activeProfileId)?.name}` 
               : 'CHOOSE HARDWARE'}
           </span>
         </div>
-        <span className="text-[10px] text-white/40 tracking-wider">CHANGE ↵</span>
+        <span className="font-mono text-[9px] text-black font-black uppercase">CHANGE</span>
       </button>
 
       {/* Side Slide-in Sheet Overlay */}
       {isOpen && (
         <div className="fixed inset-0 z-50 flex justify-end">
-          {/* Backdrop Blur */}
+          {/* Backdrop */}
           <div 
             onClick={() => setIsOpen(false)}
-            className="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" 
+            className="absolute inset-0 bg-black/80 transition-opacity" 
           />
 
           {/* Drawer Panel */}
-          <div className="relative w-full max-w-md h-full bg-[#0a0a0a] border-l border-white/10 flex flex-col z-10 shadow-[-10px_0_30px_rgba(0,0,0,0.8)]">
+          <div className="relative w-full max-w-md h-full bg-[#111] border-l-8 border-black flex flex-col z-10">
             
             {/* Header */}
-            <div className="p-6 border-b border-white/10 flex flex-col gap-4">
+            <div className="p-8 border-b-4 border-black bg-accent flex flex-col gap-6">
               <div className="flex justify-between items-center">
                 <div className="flex flex-col">
-                  <h2 className="font-serif italic text-xl text-white">Select Profile</h2>
-                  <p className="text-white/40 font-sans text-xs mt-1">Calibrate target autoEQ compensation curves</p>
+                  <h2 className="font-black text-2xl text-black uppercase tracking-tighter leading-none">SELECT_HARDWARE</h2>
+                  <p className="text-black/60 font-mono text-[10px] mt-1.5 font-bold uppercase tracking-widest">CALIBRATION_TARGET_V2</p>
                 </div>
                 <button 
                   onClick={() => setIsOpen(false)}
-                  className="w-8 h-8 flex items-center justify-center rounded-xl border border-white/10 text-white/60 hover:text-orange-400 hover:border-orange-500 transition-colors"
+                  className="w-10 h-10 flex items-center justify-center brutal-border bg-black text-accent hover:bg-zinc-900 transition-colors"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 
@@ -76,43 +73,35 @@ export default function HeadphoneSelector({ activeProfileId, onSelectProfile }: 
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search headphones (e.g. Sony, Sennheiser...)"
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-10 py-3 font-sans text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-orange-500 transition-colors"
+                  placeholder="SEARCH BRAND OR MODEL..."
+                  className="w-full bg-white brutal-border px-12 py-4 font-black text-xs text-black placeholder:text-black/20 focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
                   autoFocus
                 />
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
-                {searchQuery && (
-                  <button 
-                    onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                )}
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-black" />
               </div>
             </div>
 
             {/* Profiles List */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
               {brands.length === 0 ? (
-                <div className="p-8 text-center flex flex-col items-center justify-center h-48 border border-dashed border-white/10 rounded-xl">
-                  <Search className="w-8 h-8 text-white/20 mb-2" />
-                  <p className="font-mono text-white/40 text-xs uppercase">No profiles matched</p>
-                  <p className="text-white/30 text-xs mt-1">Try other key queries</p>
+                <div className="p-12 text-center flex flex-col items-center justify-center brutal-border border-dashed bg-white/5">
+                  <Search className="w-10 h-10 text-white/20 mb-4" />
+                  <p className="font-black text-xs text-white uppercase tracking-widest">NO_MATCH_FOUND</p>
+                  <p className="font-mono text-[10px] text-white/30 mt-2 font-bold uppercase">REFINE_SIGNAL_QUERY</p>
                 </div>
               ) : (
                 brands.map((brandName) => {
                   const brandHeadphones = filteredHeadphones.filter(hp => hp.brand === brandName);
                   return (
-                    <div key={brandName} className="border border-white/5 bg-white/[0.01] rounded-xl overflow-hidden mb-3">
+                    <div key={brandName} className="brutal-border bg-white overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                       {/* Brand Label */}
-                      <div className="bg-white/[0.03] px-4 py-2 border-b border-white/5 flex justify-between items-center">
-                        <span className="font-sans text-[10px] text-orange-400 font-bold uppercase tracking-widest">{brandName}</span>
-                        <span className="text-[9px] text-white/40 font-mono">{brandHeadphones.length} MODELS</span>
+                      <div className="bg-black px-4 py-2 border-b-2 border-black flex justify-between items-center">
+                        <span className="font-black text-[10px] text-accent uppercase tracking-[0.2em]">{brandName}</span>
+                        <span className="font-mono text-[9px] text-accent/50 font-black uppercase">{brandHeadphones.length} UNITS</span>
                       </div>
 
                       {/* Items */}
-                      <div className="divide-y divide-white/5">
+                      <div className="divide-y-2 divide-black/10">
                         {brandHeadphones.map((hp) => {
                           const isSelected = activeProfileId === hp.id;
                           return (
@@ -122,23 +111,23 @@ export default function HeadphoneSelector({ activeProfileId, onSelectProfile }: 
                                 onSelectProfile(hp);
                                 setIsOpen(false);
                               }}
-                              className={`px-4 py-3 flex justify-between items-center cursor-pointer transition-all hover:bg-white/[0.04] group ${
-                                isSelected ? 'border-l-4 border-orange-500 bg-white/[0.03]' : ''
+                              className={`px-4 py-4 flex justify-between items-center cursor-pointer transition-all hover:bg-accent/5 group ${
+                                isSelected ? 'bg-accent/10 border-l-8 border-l-black' : 'border-l-8 border-l-transparent'
                               }`}
                             >
-                              <div className="overflow-hidden pr-2">
-                                <p className={`font-sans text-sm leading-none font-semibold ${isSelected ? 'text-orange-400' : 'text-white/80'} group-hover:text-orange-400`}>
+                              <div className="overflow-hidden pr-4">
+                                <p className={`font-black text-sm uppercase tracking-tighter leading-none ${isSelected ? 'text-black' : 'text-black/80'}`}>
                                   {hp.name}
                                 </p>
-                                <p className="text-white/40 text-xs mt-1.5 truncate font-mono">
-                                  Curve: {hp.correctionCurve.map(n => (n > 0 ? `+${n}` : n)).join(', ')}
+                                <p className="font-mono text-[9px] text-black/40 mt-1.5 font-black truncate">
+                                  CORE: {hp.correctionCurve.map(n => (n > 0 ? `+${n}` : n)).join(', ')}
                                 </p>
                               </div>
                               <div className="flex items-center">
                                 {isSelected ? (
-                                  <div className="w-2.5 h-2.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
+                                  <div className="w-4 h-4 brutal-border bg-black shadow-[2px_2px_0px_0px_#C8FF00]" />
                                 ) : (
-                                  <span className="text-[10px] font-sans text-orange-400/80 opacity-0 group-hover:opacity-100 transition-opacity uppercase font-bold">SELECT</span>
+                                  <span className="font-black text-[9px] text-black/40 group-hover:text-black transition-colors uppercase">SELECT</span>
                                 )}
                               </div>
                             </div>
@@ -152,12 +141,12 @@ export default function HeadphoneSelector({ activeProfileId, onSelectProfile }: 
             </div>
 
             {/* Drawer Footer */}
-            <div className="p-4 border-t border-white/10 bg-black/40">
+            <div className="p-8 border-t-4 border-black bg-black">
               <button
                 onClick={() => setIsOpen(false)}
-                className="w-full bg-white/[0.03] border border-white/10 hover:border-orange-500/50 hover:bg-white/[0.08] text-white/80 hover:text-white rounded-xl font-sans text-xs uppercase tracking-wider py-3 text-center transition-all duration-300"
+                className="brutal-button-secondary w-full py-4 text-xs font-black uppercase tracking-widest"
               >
-                Close Drawer
+                CLOSE_CONSOLE
               </button>
             </div>
           </div>

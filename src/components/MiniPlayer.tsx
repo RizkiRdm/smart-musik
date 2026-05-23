@@ -42,45 +42,45 @@ export default function MiniPlayer({
 }: MiniPlayerProps) {
 
   return (
-    <footer className="h-20 bg-[#050505] border-t border-white/10 flex items-center px-6 justify-between select-none z-20 shrink-0">
+    <footer className="h-24 bg-white border-t-4 border-black flex items-center px-6 justify-between select-none z-20 shrink-0 shadow-[0_-4px_0_0_#000]">
       
       {/* Track info Left */}
-      <div className="flex items-center gap-3 w-[260px] overflow-hidden shrink-0">
+      <div className="flex items-center gap-4 w-[300px] overflow-hidden shrink-0">
         {track ? (
           <>
-            <div className="w-10 h-10 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center shrink-0 shadow-lg shadow-orange-500/5">
-              <Music className="w-5 h-5 text-orange-500 animate-spin-slow" />
+            <div className="w-14 h-14 brutal-border bg-accent flex items-center justify-center shrink-0 shadow-[3px_3px_0px_0px_#000]">
+              <Music className="w-7 h-7 text-black" />
             </div>
             <div className="overflow-hidden">
-              <p className="font-sans text-xs font-bold text-white truncate tracking-tight leading-none">
+              <p className="font-black text-sm text-black truncate uppercase tracking-tighter leading-none">
                 {track.title}
               </p>
-              <p className="font-sans text-[10px] text-white/40 truncate mt-1.5">
-                {track.artist || 'Unknown Signal Source'}
+              <p className="font-mono text-[11px] text-black/60 truncate mt-1 font-bold">
+                {track.artist || 'UNKNOWN SOURCE'}
               </p>
             </div>
           </>
         ) : (
           <>
-            <div className="w-10 h-10 rounded-xl border border-white/5 bg-white/[0.02] flex items-center justify-center shrink-0">
-              <div className="w-2.5 h-2.5 rounded-full bg-white/10" />
+            <div className="w-14 h-14 brutal-border bg-zinc-100 flex items-center justify-center shrink-0">
+              <div className="w-4 h-4 brutal-border bg-black/10" />
             </div>
             <div>
-              <p className="font-mono text-[9px] text-white/30 uppercase tracking-widest font-semibold">Ready to playback</p>
-              <p className="font-sans text-[9px] text-white/20 mt-0.5">Please import or select a track</p>
+              <p className="font-black text-[11px] text-black/30 uppercase tracking-widest">NO SIGNAL</p>
+              <p className="font-mono text-[10px] text-black/20 mt-0.5">LOAD DATA SOURCE</p>
             </div>
           </>
         )}
       </div>
 
       {/* Primary Players Middle */}
-      <div className="flex-1 max-w-xl flex flex-col items-center gap-1.5">
+      <div className="flex-1 max-w-2xl flex flex-col items-center gap-2">
         {/* Buttons */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
           <button
             onClick={onShuffleToggle}
-            className={`p-1.5 transition-colors ${isShuffle ? 'text-orange-400' : 'text-white/30 hover:text-white/60'}`}
-            title="Randomize list play order"
+            className={`p-2 brutal-border transition-all ${isShuffle ? 'bg-accent text-black shadow-[2px_2px_0px_0px_#000]' : 'bg-white text-black/30 hover:text-black hover:bg-zinc-50'}`}
+            title="Shuffle"
           >
             <Shuffle className="w-4 h-4" />
           </button>
@@ -88,47 +88,47 @@ export default function MiniPlayer({
           <button
             onClick={onPrev}
             disabled={!track}
-            className="p-1.5 text-white/40 hover:text-white disabled:text-white/10 disabled:cursor-not-allowed hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            className="p-2 brutal-border bg-white text-black hover:bg-accent disabled:bg-zinc-100 disabled:text-black/20 disabled:cursor-not-allowed transition-all"
           >
-            <SkipBack className="w-4 h-4 fill-current" />
+            <SkipBack className="w-5 h-5 fill-current" />
           </button>
 
           {/* Core play pause center */}
           <button
             onClick={onPlayToggle}
             disabled={!track}
-            className="w-10 h-10 rounded-full flex items-center justify-center bg-orange-500 disabled:bg-white/5 text-black disabled:text-white/20 select-none cursor-pointer transition-all duration-300 hover:bg-orange-400 hover:scale-105 active:scale-95 shadow-md shadow-orange-500/20"
+            className="w-14 h-14 brutal-border bg-accent text-black disabled:bg-zinc-100 disabled:text-black/20 cursor-pointer transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_#000] active:translate-x-[0px] active:translate-y-[0px] active:shadow-none flex items-center justify-center shadow-[4px_4px_0px_0px_#000]"
           >
             {isPlaying ? (
-              <Pause className="w-4 h-4 fill-current text-black" />
+              <Pause className="w-6 h-6 fill-current" />
             ) : (
-              <Play className="w-4 h-4 fill-current text-black translate-x-[1px]" />
+              <Play className="w-6 h-6 fill-current translate-x-[1px]" />
             )}
           </button>
 
           <button
             onClick={onNext}
             disabled={!track}
-            className="p-1.5 text-white/40 hover:text-white disabled:text-white/10 disabled:cursor-not-allowed hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            className="p-2 brutal-border bg-white text-black hover:bg-accent disabled:bg-zinc-100 disabled:text-black/20 disabled:cursor-not-allowed transition-all"
           >
-            <SkipForward className="w-4 h-4 fill-current" />
+            <SkipForward className="w-5 h-5 fill-current" />
           </button>
 
           <button
             onClick={onRepeatToggle}
-            className={`p-1.5 transition-colors ${isRepeat ? 'text-orange-400' : 'text-white/30 hover:text-white/60'}`}
-            title="Toggle single repeating song looping"
+            className={`p-2 brutal-border transition-all ${isRepeat ? 'bg-accent text-black shadow-[2px_2px_0px_0px_#000]' : 'bg-white text-black/30 hover:text-black hover:bg-zinc-50'}`}
+            title="Repeat"
           >
             <RotateCcw className="w-4 h-4" />
           </button>
         </div>
 
         {/* Timeline Slider bar */}
-        <div className="w-full flex items-center gap-3">
-          <span className="font-mono text-[9px] text-white/40 tabular-nums select-none shrink-0 w-8 text-right">
+        <div className="w-full flex items-center gap-4">
+          <span className="font-mono text-[11px] text-black font-black tabular-nums shrink-0 w-10 text-right">
             {currentTimeStr}
           </span>
-          <div className="flex-1 relative flex items-center pr-1 pl-1">
+          <div className="flex-1 relative flex items-center">
             <input
               type="range"
               min="0"
@@ -137,40 +137,42 @@ export default function MiniPlayer({
               value={progressPercent}
               onChange={(e) => onSeekChange(Number(e.target.value))}
               disabled={!track}
-              className="w-full h-1 bg-white/10 rounded-full appearance-none accent-orange-500 cursor-pointer disabled:opacity-30"
+              className="w-full h-3 brutal-border bg-white appearance-none accent-black cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
             />
           </div>
-          <span className="font-mono text-[9px] text-white/40 tabular-nums select-none shrink-0 w-8">
+          <span className="font-mono text-[11px] text-black font-black tabular-nums shrink-0 w-10">
             {durationTimeStr}
           </span>
         </div>
       </div>
 
-      {/* Right Side Options placeholder (matches layout widths) */}
-      <div className="w-[260px] flex items-center justify-end gap-3 shrink-0">
+      {/* Right Side Options placeholder */}
+      <div className="w-[300px] flex items-center justify-end gap-4 shrink-0">
         {onLyricsToggle && (
           <button
             onClick={onLyricsToggle}
-            className={`p-1.5 rounded-xl border transition-all ${
+            className={`p-2 brutal-border transition-all ${
               showLyrics
-                ? 'bg-orange-500/10 border-orange-500/30 text-orange-400'
-                : 'bg-white/[0.01] border-white/5 text-white/30 hover:text-white hover:bg-white/[0.04]'
+                ? 'bg-black text-accent shadow-[3px_3px_0px_0px_#C8FF00]'
+                : 'bg-white text-black/30 hover:text-black hover:bg-zinc-50'
             }`}
-            title="Toggle Synchronized Lyrics Panel"
+            title="Lyrics"
           >
-            <FileText className="w-4 h-4" />
+            <FileText className="w-5 h-5" />
           </button>
         )}
-        <Volume2 className="w-4 h-4 text-white/40 shrink-0" />
-        <div className="relative w-24 flex items-center pr-1 pl-1">
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={volume * 100}
-            onChange={(e) => onVolumeChange(Number(e.target.value) / 100)}
-            className="w-full h-1 bg-white/10 rounded-full accent-orange-500 appearance-none cursor-pointer"
-          />
+        <div className="flex items-center gap-3 brutal-border bg-white px-3 py-2 shadow-[3px_3px_0px_0px_#000]">
+          <Volume2 className="w-5 h-5 text-black shrink-0" />
+          <div className="relative w-28 flex items-center">
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={volume * 100}
+              onChange={(e) => onVolumeChange(Number(e.target.value) / 100)}
+              className="w-full h-1.5 bg-black/10 appearance-none accent-black cursor-pointer"
+            />
+          </div>
         </div>
       </div>
 

@@ -3,6 +3,7 @@ import { getDB } from '../storage/db';
 import { Track } from '../types';
 import { generateTrackId } from '../utils/trackId';
 import { useLibraryStore } from '../stores/libraryStore';
+import { featureExtractorService } from './FeatureExtractorService';
 
 class LibraryService {
   private static instance: LibraryService;
@@ -52,7 +53,7 @@ class LibraryService {
           durationMs: (metadata.format.duration || 0) * 1000,
           format: file.name.split('.').pop() || 'unknown',
           hasEQ: false,
-          audioFeatures: null, // To be extracted by FeatureExtractorService later
+          audioFeatures: await featureExtractorService.extractFeatures(file).catch(() => null),
           fileObject: file,
           addedAt: Date.now(),
           genre: metadata.common.genre?.[0],
@@ -98,6 +99,59 @@ class LibraryService {
     await db.put('tracks', track);
     const tracks = useLibraryStore.getState().tracks;
     useLibraryStore.getState().setTracks(tracks.map(t => t.id === track.id ? track : t));
+  }
+
+  public getSmartShuffleNextTrack(currentTrack: Track | null, mood: string): Track {
+    const tracks = useLibraryStore.getState().tracks;
+    if (tracks.length === 0) throw new Error('No tracks in library');
+    if (tracks.length === 1) return tracks[0];
+    
+    const candidates = tracks.filter((t) => !currentTrack || t.id !== currentTrack.id);
+    if (candidates.length === 0) return tracks[0];
+
+    const scoredCandidates = candidates.map((trackItem) => {
+      let score = 100;
+
+      if (trackItem.moodTag && trackItem.moodTag === mood) {
+        score += 80;
+      }
+      
+      const fullText = `${trackItem.title} ${trackItem.artist || ''} ${trackItem.genre || ''}`.toLowerCase();
+      if (mood === 'chill' && (fullText.includes('chill') || fullText.includes('lofi') || fullText.includes('slow'))) score += 50;
+      else if (mood === 'energetic' && (fullText.includes('energy') || fullText.includes('rock') || fullText.includes('fast'))) score += 50;
+      else if (mood === 'focus' && (fullText.includes('study') || fullText.includes('calm') || fullText.includes('piano'))) score += 50;
+      else if (mood === 'melancholic' && (fullText.includes('sad') || fullText.includes('cry') || fullText.includes('dark'))) score += 50;
+
+      const playCount = trackItem.playCount || 0;
+      score -= playCount * 15;
+
+      if (trackItem.lastPlayedAt) {
+        const minutesSincePlayed = (Date.now() - trackItem.lastPlayedAt) / (1000 * 60);
+        score += Math.min(45, minutesSincePlayed * 2.5);
+      } else {
+        score += 60;
+      }
+
+      return { track: trackItem, score };
+    });
+
+    scoredCandidates.sort((a, b) => b.score - a.score);
+    const selectLimit = Math.min(scoredCandidates.length, 3);
+    const selectedIdx = Math.floor(Math.random() * selectLimit);
+    return scoredCandidates[selectedIdx].track;
+  }
+
+  public getNextTrack(currentTrack: Track | null, shuffle: boolean, mood: string): Track | null {
+    const tracks = useLibraryStore.getState().tracks;
+    if (tracks.length === 0) return null;
+
+    if (shuffle) {
+      return this.getSmartShuffleNextTrack(currentTrack, mood);
+    }
+
+    const currentIdx = tracks.findIndex(t => t.id === currentTrack?.id);
+    const nextIdx = (currentIdx + 1) % tracks.length;
+    return tracks[nextIdx];
   }
 }
 
